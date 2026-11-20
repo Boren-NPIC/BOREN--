@@ -1,0 +1,6 @@
+{
+  "name": "BORINA TV",
+  "description": "BORINA TV — Full-stack community streaming platform for Khmer, Chinese, Korean, and Thai dramas and movies with Creator Studio, KHR Premium Billing (KHQR & ABA PayWay), and Admin Control Panel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,355 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered BORINA TV user profile with RBAC role and account status (PII isolated to owner/admin).",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "role": { "type": "string", "enum": ["user", "creator", "admin"] },
+        "status": { "type": "string", "enum": ["active", "suspended", "banned"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "role", "status", "createdAt", "updatedAt"]
+    },
+    "Creator": {
+      "title": "Creator",
+      "description": "Public creator channel metadata for community drama/movie uploaders.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "studioName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "bio": { "type": "string", "maxLength": 500 },
+        "avatarUrl": { "type": "string", "maxLength": 500 },
+        "verified": { "type": "boolean" },
+        "totalViews": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "studioName", "verified", "totalViews", "createdAt", "updatedAt"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Drama and movie catalog category.",
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string", "minLength": 2, "maxLength": 64, "pattern": "^[a-z0-9\\-]+$" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "khmerName": { "type": "string", "maxLength": 120 },
+        "description": { "type": "string", "maxLength": 300 },
+        "sortOrder": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["slug", "name", "sortOrder", "createdAt"]
+    },
+    "Series": {
+      "title": "Series",
+      "description": "A movie or multi-episode TV drama uploaded by creators or curators.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "khmerTitle": { "type": "string", "maxLength": 180 },
+        "description": { "type": "string", "minLength": 10, "maxLength": 2000 },
+        "type": { "type": "string", "enum": ["movie", "series"] },
+        "categorySlug": { "type": "string", "minLength": 2, "maxLength": 64, "pattern": "^[a-z0-9\\-]+$" },
+        "releaseYear": { "type": "number" },
+        "posterUrl": { "type": "string", "maxLength": 600 },
+        "coverUrl": { "type": "string", "maxLength": 600 },
+        "creatorId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "creatorName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "isPremium": { "type": "boolean" },
+        "featured": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "changes_requested"] },
+        "moderationNote": { "type": "string", "maxLength": 500 },
+        "rightsConfirmed": { "type": "boolean" },
+        "viewsCount": { "type": "number" },
+        "ratingAvg": { "type": "number" },
+        "ratingCount": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "title", "description", "type", "categorySlug", "releaseYear",
+        "posterUrl", "coverUrl", "creatorId", "creatorName", "isPremium",
+        "featured", "status", "rightsConfirmed", "viewsCount", "ratingAvg",
+        "ratingCount", "createdAt", "updatedAt"
+      ]
+    },
+    "Episode": {
+      "title": "Episode",
+      "description": "Individual video episode belonging to a movie or series.",
+      "type": "object",
+      "properties": {
+        "seriesId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "episodeNumber": { "type": "number" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "durationSec": { "type": "number" },
+        "videoUrl": { "type": "string", "maxLength": 800 },
+        "videoFormat": { "type": "string", "enum": ["mp4", "hls", "webm"] },
+        "subtitleUrl": { "type": "string", "maxLength": 800 },
+        "subtitleLang": { "type": "string", "maxLength": 40 },
+        "thumbnailUrl": { "type": "string", "maxLength": 600 },
+        "isPremium": { "type": "boolean" },
+        "creatorId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "viewsCount": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "seriesId", "episodeNumber", "title", "durationSec", "videoUrl",
+        "videoFormat", "isPremium", "creatorId", "status", "viewsCount",
+        "createdAt", "updatedAt"
+      ]
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "User Premium membership subscription state controlled by verified payment or admin.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userEmail": { "type": "string", "maxLength": 200 },
+        "plan": { "type": "string", "enum": ["monthly", "yearly"] },
+        "status": { "type": "string", "enum": ["active", "expired", "pending", "suspended"] },
+        "amountKhr": { "type": "number" },
+        "currency": { "type": "string", "enum": ["KHR"] },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "paymentId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "plan", "status", "amountKhr", "currency", "expiresAt", "createdAt", "updatedAt"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Payment transaction record in integer KHR supporting KHQR, ABA PayWay, and manual verification.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userEmail": { "type": "string", "maxLength": 200 },
+        "plan": { "type": "string", "enum": ["monthly", "yearly"] },
+        "method": { "type": "string", "enum": ["khqr", "aba_payway", "manual"] },
+        "amountKhr": { "type": "number" },
+        "currency": { "type": "string", "enum": ["KHR"] },
+        "exchangeRateKhrPerUsd": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "paid", "failed", "expired", "refunded"] },
+        "orderRef": { "type": "string", "minLength": 4, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "providerRef": { "type": "string", "maxLength": 120 },
+        "receiptRef": { "type": "string", "maxLength": 200 },
+        "manualNote": { "type": "string", "maxLength": 500 },
+        "verifiedBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "userId", "userEmail", "plan", "method", "amountKhr", "currency",
+        "exchangeRateKhrPerUsd", "status", "orderRef", "createdAt", "updatedAt"
+      ]
+    },
+    "WatchHistory": {
+      "title": "WatchHistory",
+      "description": "User playback progress and resume positions.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "seriesId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "episodeId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "seriesTitle": { "type": "string", "maxLength": 160 },
+        "episodeTitle": { "type": "string", "maxLength": 160 },
+        "posterUrl": { "type": "string", "maxLength": 600 },
+        "positionSec": { "type": "number" },
+        "durationSec": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "seriesId", "episodeId", "seriesTitle", "episodeTitle", "positionSec", "durationSec", "createdAt", "updatedAt"]
+    },
+    "Favorite": {
+      "title": "Favorite",
+      "description": "User saved watchlist / favorite series.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "seriesId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "seriesTitle": { "type": "string", "maxLength": 160 },
+        "posterUrl": { "type": "string", "maxLength": 600 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "seriesId", "seriesTitle", "createdAt"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "User review and 1-5 star rating on a series.",
+      "type": "object",
+      "properties": {
+        "seriesId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "userAvatar": { "type": "string", "maxLength": 500 },
+        "rating": { "type": "number" },
+        "content": { "type": "string", "minLength": 2, "maxLength": 1000 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["seriesId", "userId", "userName", "rating", "content", "createdAt", "updatedAt"]
+    },
+    "UploadRequest": {
+      "title": "UploadRequest",
+      "description": "Creator submission ticket for admin moderation queue.",
+      "type": "object",
+      "properties": {
+        "seriesId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "seriesTitle": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "creatorId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "creatorEmail": { "type": "string", "maxLength": 200 },
+        "rightsConfirmed": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "changes_requested"] },
+        "adminNote": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["seriesId", "seriesTitle", "creatorId", "creatorEmail", "rightsConfirmed", "status", "createdAt", "updatedAt"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Content moderation and copyright takedown complaint.",
+      "type": "object",
+      "properties": {
+        "seriesId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "seriesTitle": { "type": "string", "maxLength": 160 },
+        "episodeId": { "type": "string", "maxLength": 128 },
+        "reporterId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "reporterEmail": { "type": "string", "maxLength": 200 },
+        "reason": { "type": "string", "enum": ["copyright", "inappropriate", "broken_video", "spam"] },
+        "details": { "type": "string", "minLength": 5, "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["open", "resolved", "dismissed"] },
+        "adminAction": { "type": "string", "maxLength": 300 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["seriesId", "reporterId", "reporterEmail", "reason", "details", "status", "createdAt", "updatedAt"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Public site configuration: KHR pricing, exchange rate, enabled payment methods, banners, and ad-free toggles.",
+      "type": "object",
+      "properties": {
+        "monthlyPriceKhr": { "type": "number" },
+        "yearlyPriceKhr": { "type": "number" },
+        "exchangeRateKhrPerUsd": { "type": "number" },
+        "currency": { "type": "string", "enum": ["KHR"] },
+        "khqrEnabled": { "type": "boolean" },
+        "abaPayWayEnabled": { "type": "boolean" },
+        "manualVerificationEnabled": { "type": "boolean" },
+        "adFreePremiumEnabled": { "type": "boolean" },
+        "khqrMerchantDisplayName": { "type": "string", "maxLength": 120 },
+        "abaMerchantDisplayName": { "type": "string", "maxLength": 120 },
+        "manualInstructions": { "type": "string", "maxLength": 600 },
+        "heroTitle": { "type": "string", "maxLength": 160 },
+        "heroSubtitle": { "type": "string", "maxLength": 300 },
+        "heroBannerUrl": { "type": "string", "maxLength": 600 },
+        "announcementBanner": { "type": "string", "maxLength": 240 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "monthlyPriceKhr", "yearlyPriceKhr", "exchangeRateKhrPerUsd", "currency",
+        "khqrEnabled", "abaPayWayEnabled", "manualVerificationEnabled",
+        "adFreePremiumEnabled", "updatedAt"
+      ]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable administrative audit log recording billing, moderation, and user management actions.",
+      "type": "object",
+      "properties": {
+        "actorId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "actorEmail": { "type": "string", "maxLength": 200 },
+        "action": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "targetCollection": { "type": "string", "maxLength": 80 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "summary": { "type": "string", "minLength": 2, "maxLength": 500 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["actorId", "actorEmail", "action", "targetCollection", "targetId", "summary", "createdAt"]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted admin role registry for Firestore security rules.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "maxLength": 200 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Registered user accounts (PII isolated to owner and admin)."
+    },
+    "/creators/{creatorId}": {
+      "schema": { "$ref": "#/entities/Creator" },
+      "description": "Public creator channel profiles."
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Drama and film categories."
+    },
+    "/series/{seriesId}": {
+      "schema": { "$ref": "#/entities/Series" },
+      "description": "Movies and multi-episode TV drama series."
+    },
+    "/episodes/{episodeId}": {
+      "schema": { "$ref": "#/entities/Episode" },
+      "description": "Streamable video episodes."
+    },
+    "/subscriptions/{subscriptionId}": {
+      "schema": { "$ref": "#/entities/Subscription" },
+      "description": "User Premium subscriptions."
+    },
+    "/payments/{paymentId}": {
+      "schema": { "$ref": "#/entities/Payment" },
+      "description": "KHR payment transaction records."
+    },
+    "/watch_history/{historyId}": {
+      "schema": { "$ref": "#/entities/WatchHistory" },
+      "description": "Per-user playback resume positions."
+    },
+    "/favorites/{favoriteId}": {
+      "schema": { "$ref": "#/entities/Favorite" },
+      "description": "Per-user saved series watchlist."
+    },
+    "/comments/{commentId}": {
+      "schema": { "$ref": "#/entities/Comment" },
+      "description": "User ratings and reviews on series."
+    },
+    "/upload_requests/{requestId}": {
+      "schema": { "$ref": "#/entities/UploadRequest" },
+      "description": "Creator upload moderation queue."
+    },
+    "/reports/{reportId}": {
+      "schema": { "$ref": "#/entities/Report" },
+      "description": "Copyright and content violation reports."
+    },
+    "/site_settings/{settingId}": {
+      "schema": { "$ref": "#/entities/SiteSettings" },
+      "description": "Platform KHR pricing, payment gateway toggles, and banners."
+    },
+    "/audit_logs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Immutable admin action audit trail."
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Trusted admin UID registry."
+    }
+  }
+}
